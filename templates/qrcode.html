@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>컴퓨터의 개념 및 실습 출석 체크</title>
+  </head>
+  <body>
+    <style>
+      .qrcode {
+        width: 100%;
+        image-rendering: pixelated;
+      }
+      #count {
+        display: inline-block;
+      }
+      #list {
+        font-weight: 200;
+      }
+    </style>
+    <div class="container">
+      <div class="row gy-2 justify-content-center">
+        <div class="col-md-6 text-center">
+          <h2>컴개실 {{data.now}} 수업 출석 체크</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <img id="qrcode" class="qrcode" alt="" src="{{data.qrcode}}">
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <hr>
+          <h4><b>현재 출석 수</b> <p id="count">0</p></h4>
+          <h4><b>미출석</b> <p id="list"></p></h4>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+      setInterval(()=>{
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/count');
+        xhr.send();
+        xhr.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("count").innerHTML = xhr.responseText;
+          }
+        }
+      }, 200);
+      setInterval(()=>{
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/list');
+        xhr.send();
+        xhr.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("list").innerHTML = xhr.responseText;
+          }
+        }
+      }, 200);
+      setInterval(()=>{
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/qrget');
+        xhr.send();
+        xhr.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("qrcode").src = xhr.responseText;
+          }
+        }
+      }, 500);
+    </script>
+  </body>
+</html>
